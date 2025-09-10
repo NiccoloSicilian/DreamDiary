@@ -6,7 +6,7 @@ from psycopg2.extras import RealDictCursor
 app = Flask(__name__)
 
 # Get database URL from environment variable
-DATABASE_URL = "postgresql://dreamdb_0k4i_user:Ea7UwZIMa89NVGgHZ5ailN6g9qOM4aJm@dpg-d30sggemcj7s73d8mf0g-a.frankfurt-postgres.render.com/dreamdb_0k4i" # Render provides this for your PostgreSQL database
+DATABASE_URL = "postgresql://dreamdb_0k4i_user:Ea7UwZIMa89NVGgHZ5ailN6g9qOM4aJm@dpg-d30sggemcj7s73d8mf0g-a/dreamdb_0k4i" # Render provides this for your PostgreSQL database
 
 # Initialize PostgreSQL database
 def init_db():
