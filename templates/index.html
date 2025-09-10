@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dream Journal</title>
+  <!-- Correct path for Flask static files -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Dream Journal</h1>
+  <form id="dreamForm">
+    <input type="text" name="name" placeholder="Your Name" required><br>
+    <textarea name="description" placeholder="Describe your dream" required></textarea><br>
+    <input type="date" name="date" required><br>
+    <button type="submit">Submit Dream</button>
+  </form>
+
+  <h2>Submitted Dreams</h2>
+  <div id="dreamList"></div>
+
+  <!-- Correct path for Flask static files -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
