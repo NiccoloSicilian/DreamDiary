@@ -3,10 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Dream Journal</title>
-  <!-- Correct path for Flask static files -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+
+  <!-- Background elements -->
+  <div id="stars"></div>
+  <div id="moon"></div>
+
+  <!-- Main content -->
   <h1>Dream Journal</h1>
   <form id="dreamForm">
     <input type="text" name="name" placeholder="Your Name" required><br>
@@ -18,7 +23,8 @@
   <h2>Submitted Dreams</h2>
   <div id="dreamList"></div>
 
-  <!-- Correct path for Flask static files -->
+  <!-- JS files -->
   <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="{{ url_for('static', filename='stars.js') }}"></script> <!-- new JS for stars/moon -->
 </body>
 </html>
