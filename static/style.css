@@ -1,11 +1,16 @@
 /* General body styling */
+
 body {
     font-family: Arial, sans-serif;
-    max-width: 700px;
-    margin: 20px auto;
-    background: #1a002b;    /* Dark violet / almost black */
-    color: #e0d7f5;         /* Light text for contrast */
-    position: relative;      /* Needed for stars/moon positioning */
+    margin: 0;                     /* remove top/bottom margin */
+    min-height: 100vh;              /* full viewport height */
+    display: flex;                  /* enable flexbox */
+    flex-direction: column;         /* stack content vertically */
+    justify-content: center;        /* vertical centering */
+    align-items: center;            /* horizontal centering */
+    background: #1a002b;            /* Dark violet / almost black */
+    color: #e0d7f5;                 /* Light text for contrast */
+    position: relative;             /* Needed for stars/moon positioning */
     overflow-x: hidden;
 }
 /* Stars container */
@@ -23,7 +28,7 @@ body {
 #moon {
     position: absolute;
     top: -100px;
-    right: -200px;  /* near the right edge */
+    right: 700px;  /* near the right edge */
     width: 80px;
     height: 80px;
     background: radial-gradient(circle at 30% 30%, #fff, #ccc 60%, #999);
