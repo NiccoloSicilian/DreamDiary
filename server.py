@@ -1,20 +1,20 @@
 from flask import Flask, request, jsonify, render_template
-import sqlite3
 import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 app = Flask(__name__)
 
-# Absolute path for database
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, 'dreams.db')
+# Get database URL from environment variable
+DATABASE_URL = "postgresql://dreamdb_0k4i_user:Ea7UwZIMa89NVGgHZ5ailN6g9qOM4aJm@dpg-d30sggemcj7s73d8mf0g-a.frankfurt-postgres.render.com/dreamdb_0k4i" # Render provides this for your PostgreSQL database
 
-# Initialize SQLite database
+# Initialize PostgreSQL database
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg2.connect(DATABASE_URL)
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS dreams (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             name TEXT,
             description TEXT,
             date TEXT
@@ -38,12 +38,12 @@ def submit_dream():
     description = data.get('description')
     date = data.get('date')
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg2.connect(DATABASE_URL)
     c = conn.cursor()
-    c.execute('INSERT INTO dreams (name, description, date) VALUES (?, ?, ?)',
+    c.execute('INSERT INTO dreams (name, description, date) VALUES (%s, %s, %s) RETURNING id',
               (name, description, date))
+    dream_id = c.fetchone()[0]
     conn.commit()
-    dream_id = c.lastrowid
     conn.close()
 
     return jsonify({"success": True, "id": dream_id})
@@ -51,10 +51,10 @@ def submit_dream():
 # Get all dreams
 @app.route('/dreams')
 def get_dreams():
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=RealDictCursor)
     c = conn.cursor()
     c.execute('SELECT id, name, description, date FROM dreams ORDER BY date DESC')
-    dreams = [{"id": row[0], "name": row[1], "description": row[2], "date": row[3]} for row in c.fetchall()]
+    dreams = c.fetchall()
     conn.close()
     return jsonify(dreams)
 
@@ -66,9 +66,9 @@ def update_dream(dream_id):
     description = data.get('description')
     date = data.get('date')
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg2.connect(DATABASE_URL)
     c = conn.cursor()
-    c.execute('UPDATE dreams SET name=?, description=?, date=? WHERE id=?',
+    c.execute('UPDATE dreams SET name=%s, description=%s, date=%s WHERE id=%s',
               (name, description, date, dream_id))
     conn.commit()
     conn.close()
@@ -78,9 +78,9 @@ def update_dream(dream_id):
 # Delete a dream
 @app.route('/delete-dream/<int:dream_id>', methods=['DELETE'])
 def delete_dream(dream_id):
-    conn = sqlite3.connect(DB_PATH)
+    conn = psycopg2.connect(DATABASE_URL)
     c = conn.cursor()
-    c.execute('DELETE FROM dreams WHERE id=?', (dream_id,))
+    c.execute('DELETE FROM dreams WHERE id=%s', (dream_id,))
     conn.commit()
     conn.close()
     return jsonify({"success": True})
@@ -88,4 +88,4 @@ def delete_dream(dream_id):
 # Run locally or on Render
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))  # Render sets PORT
-    app.run(host="0.0.0.0", port=port)        # bind to all IPs
+    app.run(host="0.0.0.0", port=port)
